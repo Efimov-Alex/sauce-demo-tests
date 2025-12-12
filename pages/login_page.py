@@ -18,6 +18,8 @@ class LoginPage:
 
     error_head = (By.XPATH, "//h3[@data-test='error']")
 
+    products_title = (By.XPATH, "//span[@class='title' and text()='Products']")
+
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 10)
@@ -40,6 +42,13 @@ class LoginPage:
         """
         self.login_field.clear()
         self.login_field.send_keys(login)
+        self.password_field.clear()
+        self.password_field.send_keys(password)
+
+    def send_text_only_password(self, password):
+        """
+        Отправка текста в поле логина и пароля.
+        """
         self.password_field.clear()
         self.password_field.send_keys(password)
 
@@ -94,5 +103,25 @@ class LoginPage:
         """
         self.login_field.clear()
         self.password_field.clear()
+
+
+    def is_products_displayed(self, timeout=30):
+        """
+        Проверяет, отображается ли ghjlerns
+
+        Args:
+            timeout: время ожидания в секундах
+
+        Returns:
+            bool: True если ошибка отображается, False в противном случае
+        """
+        try:
+            wait = WebDriverWait(self.driver, timeout)
+            error_element = wait.until(
+                EC.presence_of_element_located(self.products_title)
+            )
+            return error_element.is_displayed()
+        except:
+            return False
 
 
