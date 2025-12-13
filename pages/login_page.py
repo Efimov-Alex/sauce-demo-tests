@@ -7,7 +7,21 @@ from selenium.webdriver.common.keys import Keys
 
 class LoginPage:
     """
-    Сайт для регистрации
+    Page Object Model для страницы авторизации сайта Sauce Demo.
+
+    Этот класс инкапсулирует все взаимодействия с элементами страницы логина,
+    предоставляя методы для ввода данных, нажатия кнопок и проверки состояния
+    элементов.
+
+    Attributes:
+        driver: Экземпляр WebDriver для управления браузером
+        wait: Объект WebDriverWait для явных ожиданий
+        login_field: Локатор поля для ввода имени пользователя
+        password_field: Локатор поля для ввода пароля
+        loging_button: Локатор кнопки входа
+        error_head: Локатор элемента с сообщением об ошибке
+        products_title: Локатор заголовка страницы товаров
+
     """
 
     login_field = (By.XPATH, "//input[@placeholder='Username']")
@@ -21,6 +35,20 @@ class LoginPage:
     products_title = (By.XPATH, "//span[@class='title' and text()='Products']")
 
     def __init__(self, driver):
+        """
+        Инициализирует объект LoginPage и ожидает загрузки основных элементов.
+
+        При создании экземпляра класса автоматически ожидает появления
+        и инициализирует основные элементы страницы: поля логина, пароля
+        и кнопку входа.
+
+        Args:
+            driver: Экземпляр WebDriver для управления браузером
+
+        Raises:
+            TimeoutException: Если какой-либо из элементов не появился
+                                      в течение заданного времени ожидания
+        """
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 10)
 
@@ -38,7 +66,18 @@ class LoginPage:
 
     def send_text(self, login, password):
         """
-        Отправка текста в поле логина и пароля.
+        Вводит данные в поля логина и пароля.
+
+        Очищает поля и вводит указанные значения. Этот метод используется
+        для стандартного сценария авторизации с заполнением обоих полей.
+
+        Args:
+            login: Имя пользователя для входа
+            password: Пароль для входа
+
+        Returns:
+            None
+
         """
         self.login_field.clear()
         self.login_field.send_keys(login)
@@ -47,27 +86,47 @@ class LoginPage:
 
     def send_text_only_password(self, password):
         """
-        Отправка текста в поле логина и пароля.
+        Вводит только пароль, оставляя поле логина пустым.
+
+        Используется для тестирования сценария авторизации с пустым логином.
+
+        Args:
+            password: Пароль для ввода
+
+        Returns:
+            None
         """
         self.password_field.clear()
         self.password_field.send_keys(password)
 
     def click_login_button(self):
         """
-        Нажатие на кнопку Login
+        Нажимает на кнопку входа (Login).
+
+        Выполняет клик по кнопке авторизации после заполнения полей
+        или для проверки поведения при пустых полях.
+
+        Returns:
+            None
         """
         self.loging_button.click()
 
 
     def is_error_displayed(self, timeout=10):
         """
-        Проверяет, отображается ли сообщение об ошибке
+        Проверяет, отображается ли сообщение об ошибке авторизации.
+
+        Ожидает появления элемента с сообщением об ошибке в течение
+        указанного времени и проверяет его видимость.
 
         Args:
-            timeout: время ожидания в секундах
+            timeout: Максимальное время ожидания появления элемента в секундах.
+                     По умолчанию 10 секунд.
 
         Returns:
-            bool: True если ошибка отображается, False в противном случае
+            bool: True если элемент ошибки отображается, False в противном случае
+                 или если элемент не появился в течение timeout.
+
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
@@ -80,13 +139,19 @@ class LoginPage:
 
     def get_error_text(self, timeout=10):
         """
-        Получает текст сообщения об ошибке
+        Получает текст сообщения об ошибке авторизации.
+
+        Ожидает появления и видимости элемента с ошибкой, затем возвращает
+        его текстовое содержимое.
 
         Args:
-            timeout: время ожидания в секундах
+            timeout: Максимальное время ожидания появления элемента в секундах.
+                     По умолчанию 10 секунд.
 
         Returns:
-            str: текст ошибки или пустая строка если ошибка не найдена
+            str: Текст сообщения об ошибке или пустая строка, если элемент
+                 не найден или не стал видимым в течение timeout.
+
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
@@ -99,7 +164,13 @@ class LoginPage:
 
     def clear_fields(self):
         """
-        Очищает поля логина и пароля
+        Очищает поля логина и пароля.
+
+        Удаляет любой текст, введенный в поля ввода. Полезно для подготовки
+        к следующему тестовому сценарию без перезагрузки страницы.
+
+        Returns:
+            None
         """
         self.login_field.clear()
         self.password_field.clear()
@@ -107,13 +178,20 @@ class LoginPage:
 
     def is_products_displayed(self, timeout=30):
         """
-        Проверяет, отображается ли ghjlerns
+        Проверяет, отображается ли заголовок 'Products' после успешного входа.
+
+        Используется для подтверждения успешной авторизации и перехода
+        на страницу товаров. Ожидает появления элемента с заголовком
+        в течение указанного времени.
 
         Args:
-            timeout: время ожидания в секундах
+            timeout: Максимальное время ожидания появления элемента в секундах.
+                     По умолчанию 30 секунд для учета возможных задержек.
 
         Returns:
-            bool: True если ошибка отображается, False в противном случае
+            bool: True если заголовок 'Products' отображается, False в противном случае
+                 или если элемент не появился в течение timeout.
+
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
@@ -122,6 +200,35 @@ class LoginPage:
             )
             return error_element.is_displayed()
         except:
+            return False
+
+    def is_login_field_displayed(self, timeout=30):
+        """
+        Проверяет, отображается ли и доступно ли поле логина для ввода.
+
+        Ожидает, пока кнопка входа (Login) станет кликабельной, что является
+        индикатором готовности страницы к взаимодействию.
+
+        Args:
+            timeout: Максимальное время ожидания кликабельности элемента в секундах.
+                        По умолчанию 30 секунд.
+
+        Returns:
+            bool: True если кнопка Login отображается и активна, False в противном случае
+                    или если элемент не стал кликабельным в течение timeout.
+
+        Raises:
+            Exception: Логирует информацию об ошибке, если таймаут истек
+
+        """
+        try:
+            wait = WebDriverWait(self.driver, timeout)
+            login_butt = wait.until(
+                EC.element_to_be_clickable(self.loging_button)
+            )
+            return login_butt.is_displayed() and login_butt.is_enabled()
+        except Exception as e:
+            print(f"Поле логина не стало кликабельным за {timeout} секунд: {e}")
             return False
 
 
