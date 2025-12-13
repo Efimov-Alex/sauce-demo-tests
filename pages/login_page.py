@@ -1,8 +1,6 @@
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 
 class LoginPage:
@@ -52,18 +50,6 @@ class LoginPage:
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 10)
 
-        self.login_field = self.wait.until(
-            EC.presence_of_element_located(self.login_field)
-        )
-
-        self.password_field = self.wait.until(
-            EC.presence_of_element_located(self.password_field)
-        )
-
-        self.loging_button = self.wait.until(
-            EC.presence_of_element_located(self.loging_button)
-        )
-
     def send_text(self, login, password):
         """
         Вводит данные в поля логина и пароля.
@@ -79,10 +65,17 @@ class LoginPage:
             None
 
         """
-        self.login_field.clear()
-        self.login_field.send_keys(login)
-        self.password_field.clear()
-        self.password_field.send_keys(password)
+        username_field = self.wait.until(
+            EC.visibility_of_element_located(self.login_field)
+        )
+        username_field.clear()
+        username_field.send_keys(login)
+
+        password_field = self.wait.until(
+            EC.visibility_of_element_located(self.password_field)
+        )
+        password_field.clear()
+        password_field.send_keys(password)
 
     def send_text_only_password(self, password):
         """
@@ -96,8 +89,11 @@ class LoginPage:
         Returns:
             None
         """
-        self.password_field.clear()
-        self.password_field.send_keys(password)
+        password_field = self.wait.until(
+            EC.visibility_of_element_located(self.password_field)
+        )
+        password_field.clear()
+        password_field.send_keys(password)
 
     def click_login_button(self):
         """
@@ -109,7 +105,10 @@ class LoginPage:
         Returns:
             None
         """
-        self.loging_button.click()
+        login_button = self.wait.until(
+            EC.element_to_be_clickable(self.loging_button)
+        )
+        login_button.click()
 
 
     def is_error_displayed(self, timeout=10):
@@ -172,8 +171,15 @@ class LoginPage:
         Returns:
             None
         """
-        self.login_field.clear()
-        self.password_field.clear()
+        username_field = self.wait.until(
+            EC.visibility_of_element_located(self.login_field)
+        )
+        username_field.clear()
+
+        password_field = self.wait.until(
+            EC.visibility_of_element_located(self.password_field)
+        )
+        password_field.clear()
 
 
     def is_products_displayed(self, timeout=30):
@@ -202,7 +208,7 @@ class LoginPage:
         except:
             return False
 
-    def is_login_field_displayed(self, timeout=30):
+    def is_login_button_clickable(self, timeout=30):
         """
         Проверяет, отображается ли и доступно ли поле логина для ввода.
 

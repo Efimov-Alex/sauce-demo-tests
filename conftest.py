@@ -4,7 +4,7 @@ from selenium import webdriver
 
 
 @allure.title("Подготовка драйвера")
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def chromedriver():
     """
     Фикстура для инициализации и закрытия браузера.
