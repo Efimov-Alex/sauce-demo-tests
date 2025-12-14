@@ -16,20 +16,16 @@ class LoginPage:
         wait: Объект WebDriverWait для явных ожиданий
         login_field: Локатор поля для ввода имени пользователя
         password_field: Локатор поля для ввода пароля
-        loging_button: Локатор кнопки входа
+        login_button: Локатор кнопки входа
         error_head: Локатор элемента с сообщением об ошибке
         products_title: Локатор заголовка страницы товаров
 
     """
 
     login_field = (By.XPATH, "//input[@placeholder='Username']")
-
     password_field = (By.XPATH, "//input[@placeholder='Password']")
-
-    loging_button = (By.XPATH, "//input[@type='submit']")
-
+    login_button = (By.XPATH, "//input[@type='submit']")
     error_head = (By.XPATH, "//h3[@data-test='error']")
-
     products_title = (By.XPATH, "//span[@class='title' and text()='Products']")
 
     def __init__(self, driver):
@@ -45,7 +41,7 @@ class LoginPage:
 
         Raises:
             TimeoutException: Если какой-либо из элементов не появился
-                                      в течение заданного времени ожидания
+                              в течение заданного времени ожидания
         """
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 10)
@@ -63,7 +59,6 @@ class LoginPage:
 
         Returns:
             None
-
         """
         username_field = self.wait.until(
             EC.visibility_of_element_located(self.login_field)
@@ -106,10 +101,9 @@ class LoginPage:
             None
         """
         login_button = self.wait.until(
-            EC.element_to_be_clickable(self.loging_button)
+            EC.element_to_be_clickable(self.login_button)
         )
         login_button.click()
-
 
     def is_error_displayed(self, timeout=10):
         """
@@ -124,8 +118,7 @@ class LoginPage:
 
         Returns:
             bool: True если элемент ошибки отображается, False в противном случае
-                 или если элемент не появился в течение timeout.
-
+                  или если элемент не появился в течение timeout.
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
@@ -133,7 +126,7 @@ class LoginPage:
                 EC.presence_of_element_located(self.error_head)
             )
             return error_element.is_displayed()
-        except:
+        except Exception:
             return False
 
     def get_error_text(self, timeout=10):
@@ -150,7 +143,6 @@ class LoginPage:
         Returns:
             str: Текст сообщения об ошибке или пустая строка, если элемент
                  не найден или не стал видимым в течение timeout.
-
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
@@ -158,7 +150,7 @@ class LoginPage:
                 EC.visibility_of_element_located(self.error_head)
             )
             return error_element.text
-        except:
+        except Exception:
             return ""
 
     def clear_fields(self):
@@ -181,7 +173,6 @@ class LoginPage:
         )
         password_field.clear()
 
-
     def is_products_displayed(self, timeout=30):
         """
         Проверяет, отображается ли заголовок 'Products' после успешного входа.
@@ -196,8 +187,7 @@ class LoginPage:
 
         Returns:
             bool: True если заголовок 'Products' отображается, False в противном случае
-                 или если элемент не появился в течение timeout.
-
+                  или если элемент не появился в течение timeout.
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
@@ -205,7 +195,7 @@ class LoginPage:
                 EC.presence_of_element_located(self.products_title)
             )
             return error_element.is_displayed()
-        except:
+        except Exception:
             return False
 
     def is_login_button_clickable(self, timeout=30):
@@ -217,24 +207,24 @@ class LoginPage:
 
         Args:
             timeout: Максимальное время ожидания кликабельности элемента в секундах.
-                        По умолчанию 30 секунд.
+                     По умолчанию 30 секунд.
 
         Returns:
             bool: True если кнопка Login отображается и активна, False в противном случае
-                    или если элемент не стал кликабельным в течение timeout.
+                  или если элемент не стал кликабельным в течение timeout.
 
         Raises:
             Exception: Логирует информацию об ошибке, если таймаут истек
-
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
-            login_butt = wait.until(
-                EC.element_to_be_clickable(self.loging_button)
+            login_btn = wait.until(
+                EC.element_to_be_clickable(self.login_button)
             )
-            return login_butt.is_displayed() and login_butt.is_enabled()
+            return login_btn.is_displayed() and login_btn.is_enabled()
         except Exception as e:
-            print(f"Поле логина не стало кликабельным за {timeout} секунд: {e}")
+            print(
+                f"Поле логина не стало кликабельным за {timeout} секунд: {e}"
+            )
             return False
-
 
