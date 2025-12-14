@@ -1,7 +1,7 @@
-main_url = 'https://www.saucedemo.com/'
-page_title = "Swag Labs"
-bad_password_error = "Username and password do not match any user in this service"
-locked_user_error = "Epic sadface: Sorry, this user has been locked out."
-empty_login_error = "Epic sadface: Username is required"
-url_after_login = "https://www.saucedemo.com/inventory.html"
-time_to_wait = 15
+MAIN_URL = 'https://www.saucedemo.com/'
+PAGE_TITLE = "Swag Labs"
+BAD_PASSWORD_ERROR = "Username and password do not match any user in this service"
+LOCKED_USER_ERROR = "Epic sadface: Sorry, this user has been locked out."
+EMPTY_LOGIN_ERROR = "Epic sadface: Username is required"
+URL_AFTER_LOGIN = "https://www.saucedemo.com/inventory.html"
+TIME_TO_WAIT = 15

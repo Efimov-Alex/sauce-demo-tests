@@ -32,10 +32,6 @@ class LoginPage:
         """
         Инициализирует объект LoginPage и ожидает загрузки основных элементов.
 
-        При создании экземпляра класса автоматически ожидает появления
-        и инициализирует основные элементы страницы: поля логина, пароля
-        и кнопку входа.
-
         Args:
             driver: Экземпляр WebDriver для управления браузером
 
@@ -153,26 +149,6 @@ class LoginPage:
         except Exception:
             return ""
 
-    def clear_fields(self):
-        """
-        Очищает поля логина и пароля.
-
-        Удаляет любой текст, введенный в поля ввода. Полезно для подготовки
-        к следующему тестовому сценарию без перезагрузки страницы.
-
-        Returns:
-            None
-        """
-        username_field = self.wait.until(
-            EC.visibility_of_element_located(self.login_field)
-        )
-        username_field.clear()
-
-        password_field = self.wait.until(
-            EC.visibility_of_element_located(self.password_field)
-        )
-        password_field.clear()
-
     def is_products_displayed(self, timeout=30):
         """
         Проверяет, отображается ли заголовок 'Products' после успешного входа.
@@ -191,10 +167,10 @@ class LoginPage:
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
-            error_element = wait.until(
+            product_element = wait.until(
                 EC.presence_of_element_located(self.products_title)
             )
-            return error_element.is_displayed()
+            return product_element.is_displayed()
         except Exception:
             return False
 

@@ -3,32 +3,14 @@ import pytest
 
 from pages.login_page import LoginPage
 from conf.config import (
-    bad_password_error,
-    empty_login_error,
-    locked_user_error,
-    main_url,
-    page_title,
-    url_after_login,
-    time_to_wait,
+    BAD_PASSWORD_ERROR,
+    EMPTY_LOGIN_ERROR,
+    LOCKED_USER_ERROR,
+    MAIN_URL,
+    PAGE_TITLE,
+    URL_AFTER_LOGIN,
+    TIME_TO_WAIT,
 )
-
-
-@pytest.fixture(scope="function")
-def setup(chromedriver):
-    """
-    Фикстура для подготовки тестового окружения.
-
-    Открывает главную страницу сайта перед выполнением тестов и возвращает
-    инициализированный драйвер браузера.
-
-    Args:
-        chromedriver: Экземпляр WebDriver для управления браузером
-
-    Returns:
-        WebDriver: Готовый к работе драйвер с открытой главной страницей
-    """
-    chromedriver.get(main_url)
-    return chromedriver
 
 
 @allure.epic("Сайт Sauce Demo")
@@ -54,14 +36,14 @@ class TestLogin:
             password: Пароль
         """
         with allure.step("1. Открыть главную страницу"):
-            chromedriver.get(main_url)
+            chromedriver.get(MAIN_URL)
             login_page = LoginPage(chromedriver)
-            assert chromedriver.title == page_title, (
-                f"Заголовок страницы должен быть '{page_title}'"
+            assert chromedriver.title == PAGE_TITLE, (
+                f"Заголовок страницы должен быть '{PAGE_TITLE}'"
             )
 
         with allure.step("2. Проверить, что кнопка Login доступна"):
-            assert login_page.is_login_button_clickable(time_to_wait), (
+            assert login_page.is_login_button_clickable(TIME_TO_WAIT), (
                 "Кнопка Login должна быть кликабельной"
             )
 
@@ -73,12 +55,12 @@ class TestLogin:
 
         with allure.step("5. Проверить успешную авторизацию"):
             current_url = chromedriver.current_url
-            assert current_url == url_after_login, (
-                f"После успешного входа URL должен быть '{url_after_login}'"
+            assert current_url == URL_AFTER_LOGIN, (
+                f"После успешного входа URL должен быть '{URL_AFTER_LOGIN}'"
             )
 
             assert login_page.is_products_displayed(
-                timeout=time_to_wait
+                timeout=TIME_TO_WAIT
             ), "После успешного входа должен отображаться заголовок 'Products'"
 
             assert "inventory.html" in chromedriver.current_url, (
@@ -104,7 +86,7 @@ class TestLogin:
     def test_wrong_password_login(self, chromedriver, username, password):
         """Тест авторизации с неверным паролем."""
         with allure.step("1. Открыть главную страницу"):
-            chromedriver.get(main_url)
+            chromedriver.get(MAIN_URL)
             login_page = LoginPage(chromedriver)
 
         with allure.step("2. Ввести правильный логин и неправильный пароль"):
@@ -115,19 +97,19 @@ class TestLogin:
 
         with allure.step("4. Проверить сообщение об ошибке"):
             assert login_page.is_error_displayed(
-                timeout=time_to_wait
+                timeout=TIME_TO_WAIT
             ), "При неверном пароле должно отображаться сообщение об ошибке"
 
             error_text = login_page.get_error_text()
             print(f"Текст ошибки: {error_text}")
 
-            assert bad_password_error in error_text, (
-                f"Текст ошибки должен содержать: '{bad_password_error}'"
+            assert BAD_PASSWORD_ERROR in error_text, (
+                f"Текст ошибки должен содержать: '{BAD_PASSWORD_ERROR}'"
             )
 
         with allure.step("5. Проверить, что остались на странице логина"):
             current_url = chromedriver.current_url
-            assert current_url == main_url, (
+            assert current_url == MAIN_URL, (
                 f"После ошибки должны оставаться на странице логина. "
                 f"URL: {current_url}"
             )
@@ -151,7 +133,7 @@ class TestLogin:
     def test_locked_user_login(self, chromedriver, username, password):
         """Тест авторизации заблокированного пользователя."""
         with allure.step("1. Открыть главную страницу"):
-            chromedriver.get(main_url)
+            chromedriver.get(MAIN_URL)
             login_page = LoginPage(chromedriver)
 
         with allure.step("2. Ввести данные заблокированного пользователя"):
@@ -162,19 +144,19 @@ class TestLogin:
 
         with allure.step("4. Проверить сообщение об ошибке блокировки"):
             assert login_page.is_error_displayed(
-                timeout=time_to_wait
+                timeout=TIME_TO_WAIT
             ), "Для заблокированного пользователя должно отображаться сообщение об ошибке"
 
             error_text = login_page.get_error_text()
             print(f"Текст ошибки: {error_text}")
 
-            assert locked_user_error in error_text, (
-                f"Текст ошибки должен содержать: '{locked_user_error}'"
+            assert LOCKED_USER_ERROR in error_text, (
+                f"Текст ошибки должен содержать: '{LOCKED_USER_ERROR}'"
             )
 
         with allure.step("5. Проверить, что остались на странице логина"):
             current_url = chromedriver.current_url
-            assert current_url == main_url, (
+            assert current_url == MAIN_URL, (
                 "После ошибки должны оставаться на странице логина"
             )
 
@@ -188,7 +170,7 @@ class TestLogin:
     def test_empty_login(self, chromedriver, password):
         """Тест авторизации с пустым логином."""
         with allure.step("1. Открыть главную страницу"):
-            chromedriver.get(main_url)
+            chromedriver.get(MAIN_URL)
             login_page = LoginPage(chromedriver)
 
         with allure.step("2. Ввести только пароль"):
@@ -199,19 +181,19 @@ class TestLogin:
 
         with allure.step("4. Проверить сообщение об ошибке"):
             assert login_page.is_error_displayed(
-                timeout=time_to_wait
+                timeout=TIME_TO_WAIT
             ), "При пустом логине должно отображаться сообщение об ошибке"
 
             error_text = login_page.get_error_text()
             print(f"Текст ошибки: {error_text}")
 
-            assert empty_login_error in error_text, (
-                f"Текст ошибки должен содержать: '{empty_login_error}'"
+            assert EMPTY_LOGIN_ERROR in error_text, (
+                f"Текст ошибки должен содержать: '{EMPTY_LOGIN_ERROR}'"
             )
 
         with allure.step("5. Проверить, что остались на странице логина"):
             current_url = chromedriver.current_url
-            assert current_url == main_url, (
+            assert current_url == MAIN_URL, (
                 "После ошибки должны оставаться на странице логина"
             )
 
@@ -228,7 +210,7 @@ class TestLogin:
     def test_performance_glitch_user(self, chromedriver, username, password):
         """Тест авторизации пользователя с возможными задержками."""
         with allure.step("1. Открыть главную страницу"):
-            chromedriver.get(main_url)
+            chromedriver.get(MAIN_URL)
             login_page = LoginPage(chromedriver)
 
         with allure.step("2. Ввести данные пользователя с задержками"):
@@ -238,13 +220,13 @@ class TestLogin:
             login_page.click_login_button()
 
         with allure.step("4. Проверить успешную авторизацию с учетом задержек"):
-            assert login_page.is_products_displayed(time_to_wait), (
+            assert login_page.is_products_displayed(TIME_TO_WAIT), (
                 "Заголовок 'Products' должен отображаться, несмотря на задержки"
             )
 
             current_url = chromedriver.current_url
-            assert current_url == url_after_login, (
-                f"После успешного входа URL должен быть '{url_after_login}'"
+            assert current_url == URL_AFTER_LOGIN, (
+                f"После успешного входа URL должен быть '{URL_AFTER_LOGIN}'"
             )
 
             assert "Products" in chromedriver.page_source, (

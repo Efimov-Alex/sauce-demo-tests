@@ -25,28 +25,37 @@
 # Запуск с помощью Docker
 
 ## Собрать образ
-
+```bash
 docker build -t sauce-demo-tests .
+```
 
 ## Запустить все тесты 
-
+```bash
 docker run --rm sauce-demo-tests
+```
 
 ## Запустить все тесты с детальным выводом
-
+```bash
 docker run --rm sauce-demo-tests pytest -v
+```
 
 
 
 # Запуск тестов локально
 
 ## Установка зависимостей
+```bash
 pip install -r requirements.txt
+```
 
 ## Запуск тестов локально
+```bash
 pytest tests/ -v
+```
 
-## Запуск с помощью allure
+## Запуск с генерацией отчетов
+```bash
 pytest tests/ --alluredir=allure-results -v
+```
 
 # Автор: Ефимов Алексей
